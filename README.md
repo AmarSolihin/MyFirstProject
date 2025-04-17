@@ -1,53 +1,34 @@
-# Ride-Hailing API (Week 4 Assignment)
+# Ride Hailing API (Week 4 Assignment)
 
-This project is a basic ride-hailing backend built with **Express.js** and **MongoDB**, supporting basic CRUD operations for users and rides.
+This is a ride-hailing REST API built with Node.js, Express, and MongoDB. It includes role-based actions for Customers, Drivers, and Admins.
 
----
+## 🚦 Features
 
-## 🚀 How to Run
+### 🚘 Ride Management
+- Create a ride (`POST /rides`)
+- View all rides (`GET /rides`)
+- Update ride status (`PATCH /rides/:id`)
+- Delete/cancel a ride (`DELETE /rides/:id`)
 
-1. **Install MongoDB** and make sure it's running on `mongodb://localhost:27017`
-2. **Clone or copy the project files**
-3. **Install dependencies**:
-   ```bash
-   npm install express mongodb cors
-   ```
-4. **Run the server**:
-   ```bash
-   node index.js
-   ```
+### 👥 User Management
+- Register a new user (`POST /users`)
+- View all users (`GET /users`)
+- Update a user (`PATCH /users/:id`)
+- Delete a user (`DELETE /users/:id`)
 
----
+### 🧑‍✈️ Driver-Specific
+- Update availability (`PATCH /users/:id/availability`)
+- View earnings (`GET /users/:id/earnings`)
 
-## 🔗 API Endpoints
-
-### USERS
-- `POST /users` – Create a new user
-- `GET /users` – List all users
-- `PATCH /users/:id` – Update user details
-- `DELETE /users/:id` – Remove a user
-
-### RIDES
-- `POST /rides` – Create a new ride request
-- `GET /rides` – View all rides
-- `PATCH /rides/:id` – Update ride status (e.g., from 'requested' to 'completed')
-- `DELETE /rides/:id` – Cancel a ride
+### 🛡️ Admin-Specific
+- Block a user (`PATCH /admin/block-user/:id`)
+- View system analytics (`GET /admin/analytics`)
 
 ---
 
-## 📬 Postman
-Use the provided `postman_collection.json` file to test the API in Postman.
+## 🛠️ Setup Instructions
 
----
-
-## 📌 Notes
-- Database used: `testDB`
-- Collections: `users`, `rides`
-- CORS enabled for frontend development
-
----
-
-## 📄 Author & License
-- Created for **Week 4 Web Programming Assignment**
-- MIT License
-
+1. **Clone the repository:**
+```bash
+git clone https://github.com/your-username/ride-hailing-api.git
+cd ride-hailing-api
