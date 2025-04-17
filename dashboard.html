@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ride-Hailing Dashboard</title>
+  <style>
+    body { font-family: Arial; margin: 20px; }
+    h2 { margin-top: 30px; }
+    input, button { margin: 5px; padding: 8px; }
+    .section { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Ride-Hailing System Dashboard</h1>
+
+  <div class="section">
+    <h2>Register User</h2>
+    <input id="reg-name" placeholder="Name">
+    <input id="reg-role" placeholder="Role (customer/driver/admin)">
+    <button onclick="registerUser()">Register</button>
+  </div>
+
+  <div class="section">
+    <h2>Block User (Admin)</h2>
+    <input id="block-id" placeholder="User ID">
+    <button onclick="blockUser()">Block</button>
+  </div>
+
+  <div class="section">
+    <h2>Update Driver Availability</h2>
+    <input id="driver-id" placeholder="Driver ID">
+    <select id="driver-avail">
+      <option value="true">Available</option>
+      <option value="false">Not Available</option>
+    </select>
+    <button onclick="updateAvailability()">Update</button>
+  </div>
+
+  <div class="section">
+    <h2>View Driver Earnings</h2>
+    <input id="earn-id" placeholder="Driver ID">
+    <button onclick="getEarnings()">Check</button>
+    <div id="earn-output"></div>
+  </div>
+
+  <div class="section">
+    <h2>System Analytics (Admin)</h2>
+    <button onclick="getAnalytics()">View Analytics</button>
+    <div id="analytics"></div>
+  </div>
+
+  <script>
+    const api = 'http://localhost:3000';
+
+    async function registerUser() {
+      const name = document.getElementById('reg-name').value;
+      const role = document.getElementById('reg-role').value;
+      const res = await fetch(`${api}/users`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, role })
+      });
+      alert("Registered!" + (await res.json()).id);
+    }
+
+    async function blockUser() {
+      const id = document.getElementById('block-id').value;
+      const res = await fetch(`${api}/admin/block-user/${id}`, {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      });
+      alert("Blocked!" + (await res.json()).blocked);
+    }
+
+    async function updateAvailability() {
+      const id = document.getElementById('driver-id').value;
+      const available = document.getElementById('driver-avail').value === "true";
+      const res = await fetch(`${api}/driver/availability/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ available })
+      });
+      alert("Updated!" + (await res.json()).updated);
+    }
+
+    async function getEarnings() {
+      const id = document.getElementById('earn-id').value;
+      const res = await fetch(`${api}/driver/earnings/${id}`);
+      const data = await res.json();
+      document.getElementById('earn-output').innerText = `Total Earnings: RM ${data.totalEarnings}`;
+    }
+
+    async function getAnalytics() {
+      const res = await fetch(`${api}/admin/analytics`);
+      const data = await res.json();
+      document.getElementById('analytics').innerText = `Users: ${data.totalUsers}, Rides: ${data.totalRides}`;
+    }
+  </script>
+</body>
+</html>
