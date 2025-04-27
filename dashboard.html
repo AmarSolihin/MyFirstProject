@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ride-Hailing Dashboard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f7f9fc;
+      color: #333;
+    }
+
+    header {
+      background-color: #4f46e5;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 32px;
+    }
+
+    .section {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: transform 0.2s ease;
+    }
+
+    .section:hover {
+      transform: translateY(-5px);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #4f46e5;
+    }
+
+    input, select, button {
+      margin: 5px 0;
+      padding: 10px;
+      width: 100%;
+      max-width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background: linear-gradient(135deg, #4f46e5, #6d28d9);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #4338ca, #7c3aed);
+      transform: scale(1.05);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      border: 1px solid #e2e8f0;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #edf2f7;
+      color: #4a5568;
+    }
+
+    #earn-output, #analytics {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #2d3748;
+    }
+
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #4f46e5;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 10px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading {
+      text-align: center;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Ride-Hailing System Dashboard</h1>
+  </header>
+
+  <div class="section">
+    <h2>Register User</h2>
+    <input id="reg-name" placeholder="Name">
+    <input id="reg-role" placeholder="Role (customer/driver/admin)">
+    <button onclick="registerUser()">Register</button>
+  </div>
+
+  <div class="section">
+    <h2>Request Ride (Customer)</h2>
+    <input id="ride-user" placeholder="Customer ID">
+    <input id="ride-from" placeholder="From Location">
+    <input id="ride-to" placeholder="To Location">
+    <button onclick="requestRide()">Request Ride</button>
+  </div>
+
+  <div class="section">
+    <h2>Accept Ride (Driver)</h2>
+    <select id="accept-driver"></select>
+    <select id="accept-ride"></select>
+    <button onclick="acceptRide()">Accept Ride</button>
+  </div>
+
+  <div class="section">
+    <h2>Block User (Admin)</h2>
+    <input id="block-id" placeholder="User ID">
+    <button onclick="blockUser()">Block</button>
+  </div>
+
+  <div class="section">
+    <h2>Update Driver Availability</h2>
+    <input id="driver-id" placeholder="Driver ID">
+    <select id="driver-avail">
+      <option value="true">Available</option>
+      <option value="false">Not Available</option>
+    </select>
+    <button onclick="updateAvailability()">Update</button>
+  </div>
+
+  <div class="section">
+    <h2>View Driver Earnings</h2>
+    <input id="earn-id" placeholder="Driver ID">
+    <button onclick="getEarnings()">Check</button>
+    <div id="earn-output"></div>
+  </div>
+
+  <div class="section">
+    <h2>System Analytics (Admin)</h2>
+    <button onclick="getAnalytics()">View Analytics</button>
+    <div id="analytics"></div>
+  </div>
+
+  <div class="section">
+    <h2>View All Users (Admin)</h2>
+    <button onclick="getAllUsers()">View Users</button>
+    <div id="users-list"></div>
+  </div>
+
+  <div class="section">
+    <h2>View All Rides (Admin)</h2>
+    <button onclick="getAllRides()">View Rides</button>
+    <div id="rides-list"></div>
+  </div>
+
+  <script>
+    const api = 'http://localhost:3000';
+
+    function showLoading(divId) {
+      document.getElementById(divId).innerHTML = `
+        <div class="loading">
+          <div class="spinner"></div>
+        </div>
+      `;
+    }
+
+    async function loadUserAndDriverLists() {
+      const res = await fetch(`${api}/users`);
+      const users = await res.json();
+      const driverSelect = document.getElementById('accept-driver');
+      const blockSelect = document.getElementById('block-id');
+      const driverIdSelect = document.getElementById('driver-id');
+
+      driverSelect.innerHTML = '<option value="">Select Driver</option>';
+      blockSelect.innerHTML = '<option value="">Select User</option>';
+      driverIdSelect.innerHTML = '<option value="">Select Driver</option>';
+
+      users.forEach(user => {
+        blockSelect.innerHTML += `<option value="${user._id}">${user.name}</option>`;
+
+        if (user.role === 'driver') {
+          driverSelect.innerHTML += `<option value="${user._id}">${user.name}</option>`;
+          driverIdSelect.innerHTML += `<option value="${user._id}">${user.name}</option>`;
+        }
+      });
+      loadAvailableRides(); // Load available rides for the driver to accept
+    }
+
+    async function loadAvailableRides() {
+      const res = await fetch(`${api}/rides?status=pending`);
+      const rides = await res.json();
+      const rideSelect = document.getElementById('accept-ride');
+
+      rideSelect.innerHTML = '<option value="">Select Ride</option>';
+      rides.forEach(ride => {
+        rideSelect.innerHTML += `<option value="${ride._id}">Ride from ${ride.from} to ${ride.to}</option>`;
+      });
+    }
+
+    async function registerUser() {
+      const name = document.getElementById('reg-name').value;
+      const role = document.getElementById('reg-role').value;
+      const res = await fetch(`${api}/users`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, role })
+      });
+      alert("Registered! " + (await res.json()).id);
+    }
+
+    async function requestRide() {
+      const userId = document.getElementById('ride-user').value;
+      const from = document.getElementById('ride-from').value;
+      const to = document.getElementById('ride-to').value;
+      const res = await fetch(`${api}/rides`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ customerId: userId, from, to })
+      });
+      alert("Ride Requested! " + (await res.json()).id);
+    }
+
+    async function acceptRide() {
+      const driverId = document.getElementById('accept-driver').value;
+      const rideId = document.getElementById('accept-ride').value;
+
+      if (!driverId || !rideId) {
+        alert("Please select both a driver and a ride to accept.");
+        return;
+      }
+
+      const res = await fetch(`${api}/rides/accept/${rideId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ driverId })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert(`Ride Accepted! Fare: RM ${data.fare}`);
+      } else {
+        alert(`Error: ${data.message}`);
+      }
+    }
+
+    async function blockUser() {
+      const id = document.getElementById('block-id').value;
+      const res = await fetch(`${api}/admin/block-user/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      });
+      alert("Blocked! " + (await res.json()).blocked);
+    }
+
+    async function updateAvailability() {
+      const id = document.getElementById('driver-id').value;
+      const available = document.getElementById('driver-avail').value === "true";
+      const res = await fetch(`${api}/driver/availability/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ available })
+      });
+      alert("Availability Updated! " + (await res.json()).updated);
+    }
+
+    async function getEarnings() {
+      const id = document.getElementById('earn-id').value;
+      showLoading('earn-output');
+      const res = await fetch(`${api}/driver/earnings/${id}`);
+      const data = await res.json();
+      document.getElementById('earn-output').innerText = `Total Earnings: RM ${data.totalEarnings}`;
+    }
+
+    async function getAnalytics() {
+      showLoading('analytics');
+      const res = await fetch(`${api}/admin/analytics`);
+      const data = await res.json();
+      document.getElementById('analytics').innerText = `Users: ${data.totalUsers}, Rides: ${data.totalRides}`;
+    }
+
+    async function getAllUsers() {
+      showLoading('users-list');
+      const res = await fetch(`${api}/users`);
+      const users = await res.json();
+      let output = `
+        <table>
+          <thead>
+            <tr><th>ID</th><th>Name</th><th>Role</th><th>Blocked</th></tr>
+          </thead>
+          <tbody>
+      `;
+      users.forEach(user => {
+        output += `<tr>
+          <td>${user._id}</td>
+          <td>${user.name}</td>
+          <td>${user.role}</td>
+          <td>${user.blocked ? 'Yes' : 'No'}</td>
+        </tr>`;
+      });
+      output += `</tbody></table>`;
+      document.getElementById('users-list').innerHTML = output;
+    }
+
+    async function getAllRides() {
+      showLoading('rides-list');
+      const res = await fetch(`${api}/rides`);
+      const rides = await res.json();
+      let output = `
+        <table>
+          <thead>
+            <tr><th>Ride ID</th><th>Customer ID</th><th>Driver ID</th><th>From</th><th>To</th><th>Status</th><th>Fare (RM)</th></tr>
+          </thead>
+          <tbody>
+      `;
+      rides.forEach(ride => {
+        output += `<tr>
+          <td>${ride._id}</td>
+          <td>${ride.customerId}</td>
+          <td>${ride.driverId || 'Pending'}</td>
+          <td>${ride.from}</td>
+          <td>${ride.to}</td>
+          <td>${ride.status}</td>
+          <td>${ride.fare}</td>
+        </tr>`;
+      });
+      output += `</tbody></table>`;
+      document.getElementById('rides-list').innerHTML = output;
+    }
+
+    // Load user and driver lists on page load
+    window.onload = loadUserAndDriverLists;
+  </script>
+</body>
+</html>
