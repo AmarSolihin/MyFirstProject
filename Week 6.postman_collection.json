@@ -1,0 +1,102 @@
+{
+	"info": {
+		"_postman_id": "b3de480d-db85-432b-98a6-268204a636f1",
+		"name": "Week 6",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43904865",
+		"_collection_link": "https://amarsolihin.postman.co/workspace/Amar-Solihin's-Workspace~559797a9-50c3-44ac-8403-298e0a268101/collection/43904865-b3de480d-db85-432b-98a6-268204a636f1?action=share&source=collection_link&creator=43904865"
+	},
+	"item": [
+		{
+			"name": "Admin register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"admin@example.com\",\r\n  \"password\": \"securePassword123\",\r\n  \"role\": \"admin\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Admin login",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"admin@example.com\",\r\n  \"password\": \"securePassword123\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Admin check",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODMxZWIxYzYyZjNkZTRhNjhmN2E5YWIiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NDgxMDI1MDUsImV4cCI6MTc0ODEwNjEwNX0.rX6_vyOBy3q9NrBHaL9hzaw2_md-c6PQwe5OcC2IiII",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/admin/users/123",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"admin",
+						"users",
+						"123"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
