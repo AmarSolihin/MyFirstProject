@@ -1,0 +1,12 @@
+[{
+  "name": "Alice",
+  "totalRides": 2,
+  "totalFare": 37.8,
+  "avgDistance": 10.35
+},
+{
+  "name": "Bob",
+  "totalRides": 1,
+  "totalFare": 18.75,
+  "avgDistance": 9.8
+}]
