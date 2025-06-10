@@ -1,0 +1,31 @@
+{
+	"info": {
+		"_postman_id": "d5cc1135-cf2d-4ba0-bdc1-2b395ec22ef1",
+		"name": "week 7 ",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43904865",
+		"_collection_link": "https://amarsolihin.postman.co/workspace/Amar-Solihin's-Workspace~559797a9-50c3-44ac-8403-298e0a268101/collection/43904865-d5cc1135-cf2d-4ba0-bdc1-2b395ec22ef1?action=share&source=collection_link&creator=43904865"
+	},
+	"item": [
+		{
+			"name": "http://localhost:3000/analytics/passengers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/analytics/passengers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"analytics",
+						"passengers"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
