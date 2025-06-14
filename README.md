@@ -30,4 +30,4 @@ A ride-hailing backend system for UTeM students, using Node.js, Express, and Mon
 - `PUT /api/rides/complete/:rideId`
 
 ## Author
-Amar Solihin - BERR2243 Assignment
+Group 8 - BERR2243 Assignment
