@@ -1,26 +1,56 @@
-const { MongoClient } = require('mongodb');
+const express = require('express');
+const mongoose = require('mongoose');
+const app = express();
+const cors = require('cors');
+app.use(cors()); 
 
-const uri = "mongodb://localhost:27017";
-const client = new MongoClient(uri);
 
-async function run() {
-    try {
-        await client.connect();
-        console.log("Connected to MongoDB!");
+mongoose.connect('mongodb://localhost:27017/ehailingDB', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
-        const db = client.db("testDB");
-        const users = db.collection("users");
+const userSchema = new mongoose.Schema({}, { strict: false });
+const User = mongoose.model('User', userSchema, 'users');
 
-        const result = await users.insertOne({ name: "Amar", age: 22 });
-        console.log(`Document inserted with _id: ${result.insertedId}`);
+app.get('/analytics/passengers', async (req, res) => {
+  try {
+    const result = await User.aggregate([
+      {
+        $lookup: {
+          from: "rides",
+          localField: "_id",
+          foreignField: "userId",
+          as: "rides"
+        }
+      },
+      {
+        $unwind: "$rides"
+      },
+      {
+        $group: {
+          _id: "$_id",
+          name: { $first: "$name" },
+          totalRides: { $sum: 1 },
+          totalFare: { $sum: "$rides.fare" },
+          avgDistance: { $avg: "$rides.distance" }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          name: 1,
+          totalRides: 1,
+          totalFare: 1,
+          avgDistance: 1
+        }
+      }
+    ]);
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Aggregation failed.');
+  }
+});
 
-        const findResult = await users.findOne({ _id: result.insertedId });
-        console.log("Found Document:", findResult);
-    } catch (err) {
-        console.error(err);
-    } finally {
-        await client.close();
-    }
-}
-
-run();
+app.listen(3000, () => console.log('Server is running on port 3000'));
