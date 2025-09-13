@@ -1,134 +1,33 @@
-# berr2243-25
-# Week 1 Exercise: Environment Setup, Git Workflows & Hello MongoDB
+# MyTaxi Backend API
 
-## Objective
-Set up core development tools, learn basic Git workflows, and create a simple NodeJS script that connects to MongoDB.
+A ride-hailing backend system for UTeM students, using Node.js, Express, and MongoDB Atlas.
 
----
+## Features
+- User Registration & Login
+- Driver offers a ride
+- Rider books a ride
+- View available rides
+- Mark rides as complete
 
-## Development Tools Installation
+## Tech Stack
+- Node.js + Express
+- MongoDB Atlas + Mongoose
+- RESTful API
+- Hosted on Render
 
-### 1. **VSCode Installation**
-- Downloaded from: [https://code.visualstudio.com/](https://code.visualstudio.com/)
-- Installed successfully.
-- Installed recommended extension:
-  - **MongoDB for VSCode**
+## How to Run
+1. `npm install`
+2. Add `.env` file with MongoDB URI
+3. `node server.js`
 
----
-
-### 2. **NodeJS & npm Installation**
-- Downloaded LTS version from: [https://nodejs.org/](https://nodejs.org/)
-- Verified installation:
-  ```bash
-  node -v
-  npm -v
-  ```
-  Example output:
-  ```
-  v18.x.x
-  9.x.x
-  ```
-
----
-
-### 3. **MongoDB Installation**
-- Followed MongoDB Community Server installation guide:  
-  [MongoDB Installation Guide](https://www.mongodb.com/docs/manual/administration/install-community/)
-- Started MongoDB service:
-  ```bash
-  sudo systemctl start mongod
-  ```
-- Verified MongoDB is running.
-
----
-
-### 4. **Git Installation**
-- Downloaded from: [https://git-scm.com/](https://git-scm.com/)
-- Configured Git:
-  ```bash
-  git config --global user.name "Your Name"
-  git config --global user.email "your.email@example.com"
-  git config --global --list
-  ```
-
----
-
-### 5. **MongoDB Compass Installation (Optional)**
-- Downloaded and installed from:  
-  [https://www.mongodb.com/products/compass](https://www.mongodb.com/products/compass)
-
----
-
-## Repository Setup
-
-- Created a GitHub repository named: `MyFirstProject`
-- Branches:
-  - `main`
-  - `feature/setup`
-- Cloned repository locally:
-  ```bash
-  git clone https://github.com/AmarSolihin/MyFirstProject.git
-  cd MyFirstProject
-  git checkout -b feature/setup
-  ```
-
----
-
-## Project Files
-
-### 1. **index.js**
-
-- Contains NodeJS script that:
-  - Connects to MongoDB.
-  - Inserts a document.
-  - Reads and displays inserted document.
-
----
-
-### 2. **.gitignore**
-```bash
-node_modules/
-```
-
----
-
-## Project Setup Steps
-
-1. Initialize NodeJS project:
-   ```bash
-   npm init -y
-   ```
-
-2. Install MongoDB Driver:
-   ```bash
-   npm install mongodb
-   ```
-
-3. Run script:
-   ```bash
-   node index.js
-   ```
-
----
-
-## Deliverables
-
-- GitHub repository: https://github.com/AmarSolihin/MyFirstProject
-- Branch structure:
-  - `main`
-  - `feature/setup`
-- Files included:
-  - `README.md`
-  - `.gitignore`
-  - `index.js`
-- Screenshots:
-  - VSCode with extensions.
-  - Terminal outputs (tool installations, Git config, script execution).
-  - MongoDB Compass showing inserted document.
-
----
+## API Endpoints
+- `POST /api/users/register`
+- `POST /api/users/login`
+- `GET /api/users/profile/:matricNo`
+- `POST /api/rides/offer`
+- `POST /api/rides/book`
+- `GET /api/rides/available`
+- `PUT /api/rides/complete/:rideId`
 
 ## Author
-
-Amar Solihin
-
+Group 8 - BERR2243 Assignment
